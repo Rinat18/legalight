@@ -1,7 +1,7 @@
 'use server'
 
 const TELEGRAM_BOT_TOKEN = '8482726774:AAEb21VOtB30hZOWlJFB3TQjP5RBXSjN9ww';
-const TELEGRAM_CHAT_ID = '@Anvar495';
+const TELEGRAM_CHAT_ID = '769291850';
 
 export async function sendToTelegram(formData: FormData) {
   const name = formData.get('name');
