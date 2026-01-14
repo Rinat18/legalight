@@ -1,12 +1,36 @@
+'use client'; // Обязательно для анимаций
+
 import Link from 'next/link';
-import { Scale, Phone, MapPin, CheckCircle, Calculator, Users, FileText, ArrowRight, Mail, MessageCircle, Send } from 'lucide-react';
+import { Scale, Phone, MapPin, CheckCircle, Calculator, Users, ArrowRight, Mail, MessageCircle, Send } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+// Настройки анимации (чтобы не дублировать код)
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2 // Задержка между появлением карточек
+    }
+  }
+};
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-blue-100">
       
       {/* --- HEADER --- */}
-      <header className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-slate-100 z-50">
+      <motion.header 
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-100 z-50"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
           
           {/* Логотип */}
@@ -15,36 +39,31 @@ export default function Home() {
             <span className="text-[9px] md:text-[10px] text-slate-500 font-medium tracking-widest uppercase mt-1">Юридическая компания</span>
           </div>
           
-          {/* Меню (скрыто на мобильных) */}
+          {/* Меню */}
           <nav className="hidden lg:flex gap-8 text-sm font-medium text-slate-600 absolute left-1/2 -translate-x-1/2">
             <Link href="#services" className="hover:text-blue-900 transition">Услуги</Link>
             <Link href="#about" className="hover:text-blue-900 transition">О компании</Link>
             <Link href="#contact" className="hover:text-blue-900 transition">Контакты</Link>
           </nav>
 
-          {/* Правая часть: Мессенджеры, Телефоны и Кнопка */}
+          {/* Контакты справа */}
           <div className="flex items-center gap-3 md:gap-6">
-            
-            {/* Блок контактов (Иконки + Номера) */}
             <div className="flex items-center gap-4">
               
-              {/* Мессенджеры (Видны всегда) */}
+              {/* Мессенджеры */}
               <div className="flex items-center gap-2 md:gap-3">
-                 <a href="https://wa.me/996772774433" target="_blank" className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition border border-green-100" aria-label="WhatsApp">
+                 <a href="https://wa.me/996772774433" target="_blank" className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition border border-green-100 hover:scale-110 duration-300">
                     <MessageCircle size={18} />
                  </a>
-                 <a href="https://t.me/+996772774433" target="_blank" className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white transition border border-blue-100" aria-label="Telegram">
+                 <a href="https://t.me/+996772774433" target="_blank" className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white transition border border-blue-100 hover:scale-110 duration-300">
                     <Send size={18} />
                  </a>
               </div>
 
-              {/* Разделитель (только на ПК) */}
               <div className="hidden lg:block w-px h-8 bg-slate-200"></div>
 
               {/* Телефоны */}
               <div className="flex flex-col items-end">
-                
-                {/* МОБИЛЬНАЯ ВЕРСИЯ: Две иконки звонка */}
                 <div className="lg:hidden flex gap-2">
                   <a href="tel:+996772774433" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 active:bg-blue-100 border border-slate-200">
                     <Phone className="w-4 h-4" />
@@ -54,7 +73,6 @@ export default function Home() {
                   </a>
                 </div>
 
-                {/* ДЕСКТОП ВЕРСИЯ: Номера текстом */}
                 <div className="hidden lg:flex flex-col items-end leading-tight">
                   <a href="tel:+996772774433" className="text-sm font-bold text-slate-800 hover:text-blue-900 transition">
                     +996 (772) 77-44-33
@@ -64,101 +82,150 @@ export default function Home() {
                   </a>
                 </div>
               </div>
-
             </div>
             
-            {/* Кнопка заявки (Скрыта на мобильном, чтобы не перегружать шапку) */}
-            <Link href="#contact" className="hidden xl:block bg-blue-900 text-white px-5 py-2.5 rounded text-sm font-medium hover:bg-blue-800 transition shadow-lg shadow-blue-900/20 whitespace-nowrap">
+            <Link href="#contact" className="hidden xl:block bg-blue-900 text-white px-5 py-2.5 rounded text-sm font-medium hover:bg-blue-800 transition shadow-lg shadow-blue-900/20 whitespace-nowrap hover:-translate-y-0.5 transform duration-200">
               Оставить заявку
             </Link>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* --- HERO BLOCK --- */}
       <section className="pt-24 md:pt-32 pb-16 md:pb-24 px-4 bg-slate-50 border-b border-slate-100">
-        <div className="max-w-5xl mx-auto text-center">
-          <span className="inline-block py-1 px-3 rounded-full bg-white border border-slate-200 text-blue-900 text-[10px] md:text-xs font-bold tracking-wide mb-6 shadow-sm">
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="max-w-5xl mx-auto text-center"
+        >
+          <motion.span variants={fadeInUp} className="inline-block py-1 px-3 rounded-full bg-white border border-slate-200 text-blue-900 text-[10px] md:text-xs font-bold tracking-wide mb-6 shadow-sm">
             БИШКЕК • КЫРГЫЗСТАН
-          </span>
-          <h1 className="text-3xl md:text-6xl font-serif font-bold text-slate-900 mb-6 md:mb-8 leading-tight">
+          </motion.span>
+          <motion.h1 variants={fadeInUp} className="text-3xl md:text-6xl font-serif font-bold text-slate-900 mb-6 md:mb-8 leading-tight">
             Комплексная защита <br className="hidden md:block"/>
             <span className="text-blue-900">вашего бизнеса и прав</span>
-          </h1>
-          <p className="text-base md:text-lg text-slate-600 mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed">
+          </motion.h1>
+          <motion.p variants={fadeInUp} className="text-base md:text-lg text-slate-600 mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed">
             Команда LegaLight — это квалифицированные юристы с опытом более 10 лет. 
             Мы предлагаем готовые решения: от юридического аутсорсинга до бухгалтерии.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="#contact" className="w-full sm:w-auto bg-blue-900 text-white px-8 py-4 rounded text-center font-medium hover:bg-blue-800 transition flex items-center justify-center gap-2 shadow-xl shadow-blue-900/20">
+          </motion.p>
+          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href="#contact" className="w-full sm:w-auto bg-blue-900 text-white px-8 py-4 rounded text-center font-medium hover:bg-blue-800 transition flex items-center justify-center gap-2 shadow-xl shadow-blue-900/20 hover:-translate-y-1 duration-200">
               Получить консультацию <ArrowRight size={18} />
             </Link>
-            <Link href="#services" className="w-full sm:w-auto bg-white border border-slate-200 text-slate-700 px-8 py-4 rounded text-center font-medium hover:border-blue-900 hover:text-blue-900 transition">
+            <Link href="#services" className="w-full sm:w-auto bg-white border border-slate-200 text-slate-700 px-8 py-4 rounded text-center font-medium hover:border-blue-900 hover:text-blue-900 transition hover:-translate-y-1 duration-200">
               Наши практики
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* --- SERVICES (GRID) --- */}
+      {/* --- SERVICES (GRID - 3 ITEMS) --- */}
       <section id="services" className="py-16 md:py-24 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            className="text-center mb-12"
+          >
             <h2 className="text-2xl md:text-3xl font-serif font-bold text-slate-900 mb-3">Направления деятельности</h2>
-            <p className="text-slate-500 text-sm md:text-base">Полный спектр услуг для бизнеса и частных лиц</p>
-          </div>
+            <p className="text-slate-500 text-sm md:text-base">Ключевые компетенции для решения ваших задач</p>
+          </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            // ИЗМЕНЕНИЕ: grid-cols-3 для симметрии
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
             {[
               { title: "Аутсорсинг", icon: <Scale />, text: "Правовой анализ договоров, сопровождение сделок и участие в переговорах." },
               { title: "Представительство", icon: <Users />, text: "Защита интересов в судах, составление жалоб, досудебное урегулирование." },
               { title: "Бухгалтерия", icon: <Calculator />, text: "Аудит, бухгалтерский аутсорсинг и оптимизация налогообложения." },
-              { title: "HR услуги", icon: <FileText />, text: "Подбор персонала, кадровое делопроизводство и выстраивание KPI." }
             ].map((item, i) => (
-              <div key={i} className="group p-6 md:p-8 rounded-xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition duration-300">
-                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center mb-6 text-blue-900 shadow-sm group-hover:scale-110 transition">
+              <motion.div 
+                key={i} 
+                variants={fadeInUp}
+                whileHover={{ y: -10, transition: { duration: 0.2 } }} // Анимация при наведении
+                className="group p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-xl hover:shadow-blue-900/5 transition duration-300"
+              >
+                <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-6 text-blue-900 shadow-sm group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition duration-300">
                   {item.icon}
                 </div>
-                <h3 className="text-lg font-bold mb-3">{item.title}</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">{item.text}</p>
-              </div>
+                <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                <p className="text-slate-600 leading-relaxed">{item.text}</p>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* --- ABOUT / TRUST --- */}
       <section id="about" className="py-16 md:py-24 px-4 bg-slate-900 text-white overflow-hidden relative">
         <div className="max-w-6xl mx-auto relative z-10 grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-          <div>
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+          >
             <h2 className="text-2xl md:text-3xl font-serif font-bold mb-6">Почему выбирают LegaLight</h2>
             <p className="text-slate-300 mb-8 leading-relaxed text-sm md:text-base">
               Мы не используем шаблонные решения. Каждый кейс рассматривается индивидуально с учетом специфики вашего бизнеса. 
-              Наш подход объединяет юридическую точность, финансовую грамотность и эффективное управление кадрами.
+              Наш подход объединяет юридическую точность и финансовую грамотность.
             </p>
-            <div className="space-y-4">
-              {["10+ лет опыта на рынке", "Комплексный подход (Юристы + HR + Бухгалтерия)", "Работаем на 3 языках (RU, KG, EN)"].map((txt, i) => (
-                <div key={i} className="flex items-start gap-3">
+            <div className="space-y-5">
+              {["10+ лет опыта на рынке", "Комплексный подход (Юристы + Бухгалтерия)", "Работаем на 3 языках (RU, KG, EN)"].map((txt, i) => (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.2, duration: 0.5 }}
+                  viewport={{ once: true }}
+                  className="flex items-start gap-3"
+                >
                   <CheckCircle className="text-blue-400 shrink-0 mt-0.5 w-5 h-5" />
                   <span className="text-slate-200 text-sm md:text-base">{txt}</span>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
           
-          <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 text-center">
-             <div className="text-4xl md:text-5xl font-bold text-blue-400 mb-2">100%</div>
-             <div className="text-xs md:text-sm text-slate-400 uppercase tracking-wider">Конфиденциальность</div>
-             <div className="my-6 h-px bg-slate-700 w-full"></div>
-             <p className="text-slate-400 text-sm">Мы гарантируем полную защиту вашей информации и соблюдение адвокатской тайны.</p>
-          </div>
+          <motion.div 
+             initial={{ scale: 0.9, opacity: 0 }}
+             whileInView={{ scale: 1, opacity: 1 }}
+             transition={{ duration: 0.8 }}
+             viewport={{ once: true }}
+             className="bg-slate-800 p-8 rounded-2xl border border-slate-700 text-center relative"
+          >
+             {/* Декоративный элемент - свечение */}
+             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+             
+             <div className="relative">
+                <div className="text-4xl md:text-5xl font-bold text-blue-400 mb-2">100%</div>
+                <div className="text-xs md:text-sm text-slate-400 uppercase tracking-wider">Конфиденциальность</div>
+                <div className="my-6 h-px bg-slate-700 w-full"></div>
+                <p className="text-slate-400 text-sm">Мы гарантируем полную защиту вашей информации и соблюдение адвокатской тайны.</p>
+             </div>
+          </motion.div>
         </div>
       </section>
 
       {/* --- CONTACT FORM --- */}
       <section id="contact" className="bg-slate-50 py-16 md:py-24 px-4 scroll-mt-20">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden grid lg:grid-cols-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white rounded-2xl shadow-xl overflow-hidden grid lg:grid-cols-2"
+          >
             
             {/* Левая часть: Контакты */}
             <div className="p-8 md:p-14 bg-blue-900 text-white flex flex-col justify-between order-2 lg:order-1">
@@ -190,10 +257,10 @@ export default function Home() {
                           +996 (772) 77-44-33
                         </a>
                         <div className="flex gap-2">
-                           <a href="https://wa.me/996772774433" target="_blank" className="bg-green-600 p-1.5 rounded text-white hover:bg-green-500 transition" title="WhatsApp">
+                           <a href="https://wa.me/996772774433" target="_blank" className="bg-green-600 p-1.5 rounded text-white hover:bg-green-500 transition hover:scale-110" title="WhatsApp">
                              <MessageCircle size={16} />
                            </a>
-                           <a href="https://t.me/+996772774433" target="_blank" className="bg-blue-500 p-1.5 rounded text-white hover:bg-blue-400 transition" title="Telegram">
+                           <a href="https://t.me/+996772774433" target="_blank" className="bg-blue-500 p-1.5 rounded text-white hover:bg-blue-400 transition hover:scale-110" title="Telegram">
                              <Send size={16} />
                            </a>
                         </div>
@@ -205,10 +272,10 @@ export default function Home() {
                           +996 (554) 900-928
                         </a>
                         <div className="flex gap-2">
-                           <a href="https://wa.me/996554900928" target="_blank" className="bg-green-600 p-1.5 rounded text-white hover:bg-green-500 transition" title="WhatsApp">
+                           <a href="https://wa.me/996554900928" target="_blank" className="bg-green-600 p-1.5 rounded text-white hover:bg-green-500 transition hover:scale-110" title="WhatsApp">
                              <MessageCircle size={16} />
                            </a>
-                           <a href="https://t.me/+996554900928" target="_blank" className="bg-blue-500 p-1.5 rounded text-white hover:bg-blue-400 transition" title="Telegram">
+                           <a href="https://t.me/+996554900928" target="_blank" className="bg-blue-500 p-1.5 rounded text-white hover:bg-blue-400 transition hover:scale-110" title="Telegram">
                              <Send size={16} />
                            </a>
                         </div>
@@ -242,13 +309,13 @@ export default function Home() {
                 <input type="text" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" placeholder="Ваше имя" />
                 <input type="tel" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" placeholder="Телефон" />
                 <textarea rows={3} className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" placeholder="Ваш вопрос"></textarea>
-                <button type="submit" className="w-full bg-blue-900 text-white py-4 rounded-lg font-bold hover:bg-blue-800 transition shadow-lg shadow-blue-900/10">
+                <button type="submit" className="w-full bg-blue-900 text-white py-4 rounded-lg font-bold hover:bg-blue-800 transition shadow-lg shadow-blue-900/10 hover:shadow-xl hover:-translate-y-0.5">
                   Отправить
                 </button>
               </form>
             </div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
 
