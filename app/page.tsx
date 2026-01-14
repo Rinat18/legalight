@@ -1,4 +1,5 @@
 'use client'; // Обязательно для анимаций
+import { sendToTelegram } from './actions';
 
 import Link from 'next/link';
 import { Scale, Phone, MapPin, CheckCircle, Calculator, Users, ArrowRight, Mail, MessageCircle, Send } from 'lucide-react';
@@ -305,10 +306,30 @@ export default function Home() {
               <h3 className="text-2xl font-serif font-bold text-slate-900 mb-2">Оставить заявку</h3>
               <p className="text-slate-500 mb-8 text-sm">Перезвоним в течение часа.</p>
               
-              <form className="space-y-4">
-                <input type="text" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" placeholder="Ваше имя" />
-                <input type="tel" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" placeholder="Телефон" />
-                <textarea rows={3} className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" placeholder="Ваш вопрос"></textarea>
+             <form action={async (formData) => {
+                await sendToTelegram(formData);
+                alert('Спасибо! Ваша заявка отправлена. Мы скоро свяжемся с вами.');
+              }} className="space-y-4">
+                <input 
+                  name="name" 
+                  type="text" 
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" 
+                  placeholder="Ваше имя" 
+                />
+                <input 
+                  name="phone" 
+                  type="tel" 
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" 
+                  placeholder="Телефон" 
+                />
+                <textarea 
+                  name="question"
+                  rows={3} 
+                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" 
+                  placeholder="Ваш вопрос"
+                ></textarea>
                 <button type="submit" className="w-full bg-blue-900 text-white py-4 rounded-lg font-bold hover:bg-blue-800 transition shadow-lg shadow-blue-900/10 hover:shadow-xl hover:-translate-y-0.5">
                   Отправить
                 </button>
