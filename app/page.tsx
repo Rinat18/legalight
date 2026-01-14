@@ -3,15 +3,20 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Scale, Phone, MapPin, CheckCircle, Calculator, Users, ArrowRight, Mail, MessageCircle, Send } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion'; // 👈 Добавил Variants
 
-// --- НАСТРОЙКИ АНИМАЦИИ ---
-const fadeInUp = {
+// --- НАСТРОЙКИ АНИМАЦИИ (ИСПРАВЛЕНО) ---
+// Мы явно говорим TypeScript, что это Variants
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.6 } // Убрал 'ease', чтобы не было ошибок типов, стандартная анимация тоже плавная
+  }
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -22,9 +27,9 @@ const staggerContainer = {
 export default function Home() {
   const [loading, setLoading] = useState(false);
 
-  // --- ЛОГИКА ОТПРАВКИ ФОРМЫ (ПРЯМО ИЗ БРАУЗЕРА) ---
+  // --- ЛОГИКА ОТПРАВКИ ФОРМЫ ---
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault(); // Останавливаем перезагрузку страницы
+    e.preventDefault();
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -32,9 +37,9 @@ export default function Home() {
     const phone = formData.get('phone');
     const question = formData.get('question');
 
-    // 👇 ВСТАВЬ СЮДА СВОИ ЦИФРЫ ID
+    // 👇 ТВОИ ДАННЫЕ
     const TOKEN = '8482726774:AAEb21VOtB30hZOWlJFB3TQjP5RBXSjN9ww'; 
-    const CHAT_ID = '755194552'; 
+    const CHAT_ID = '1256093838'; // Вставь сюда свой ID, если он другой
 
     const text = `
 🔥 *Заявка с сайта LegaLight!*
@@ -54,7 +59,7 @@ export default function Home() {
         }),
       });
       alert('Спасибо! Ваша заявка отправлена.');
-      (e.target as HTMLFormElement).reset(); // Очистить форму
+      (e.target as HTMLFormElement).reset();
     } catch (error) {
       console.error(error);
       alert('Ошибка при отправке. Пожалуйста, позвоните нам.');
@@ -392,7 +397,7 @@ export default function Home() {
         ></iframe>
       </section>
 
-     {/* --- FOOTER --- */}
+      {/* --- FOOTER --- */}
       <footer className="bg-slate-900 text-slate-400 py-12 px-4 border-t border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
           
@@ -400,7 +405,7 @@ export default function Home() {
           <div className="text-center md:text-left">
             <span className="font-serif text-xl font-bold text-white tracking-tight">LegaLight</span>
             <p className="text-xs mt-2 max-w-xs text-slate-500">
-              г. Бишкек, ул. Токтогула 125/1, БЦ Авангард Tower B
+              г. Бишкек, ул. Токтогула 125/1, БЦ Авангард
             </p>
             <div className="text-xs text-slate-600 mt-4">
               © {new Date().getFullYear()} LegaLight. All rights reserved.
@@ -417,7 +422,7 @@ export default function Home() {
                <Link href="#contact" className="hover:text-white transition">Контакты</Link>
             </div>
 
-            {/* Документы (НОВОЕ) */}
+            {/* Документы */}
             <div className="flex flex-col gap-3">
                <span className="text-white font-bold mb-1">Документы</span>
                <Link href="/privacy" className="hover:text-white transition">Политика конфиденциальности</Link>
