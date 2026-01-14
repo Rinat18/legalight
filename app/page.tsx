@@ -1,11 +1,11 @@
-'use client'; // Обязательно для анимаций
-import { sendToTelegram } from './actions';
+'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { Scale, Phone, MapPin, CheckCircle, Calculator, Users, ArrowRight, Mail, MessageCircle, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Настройки анимации (чтобы не дублировать код)
+// --- НАСТРОЙКИ АНИМАЦИИ ---
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
@@ -15,13 +15,54 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.2 // Задержка между появлением карточек
-    }
+    transition: { staggerChildren: 0.2 }
   }
 };
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
+
+  // --- ЛОГИКА ОТПРАВКИ ФОРМЫ (ПРЯМО ИЗ БРАУЗЕРА) ---
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault(); // Останавливаем перезагрузку страницы
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get('name');
+    const phone = formData.get('phone');
+    const question = formData.get('question');
+
+    // 👇 ВСТАВЬ СЮДА СВОИ ЦИФРЫ ID
+    const TOKEN = '8482726774:AAEb21VOtB30hZOWlJFB3TQjP5RBXSjN9ww'; 
+    const CHAT_ID = '755194552'; 
+
+    const text = `
+🔥 *Заявка с сайта LegaLight!*
+👤 *Имя:* ${name}
+📞 *Телефон:* ${phone}
+❓ *Вопрос:* ${question || 'Не указан'}
+    `;
+
+    try {
+      await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: text,
+          parse_mode: 'Markdown',
+        }),
+      });
+      alert('Спасибо! Ваша заявка отправлена.');
+      (e.target as HTMLFormElement).reset(); // Очистить форму
+    } catch (error) {
+      console.error(error);
+      alert('Ошибка при отправке. Пожалуйста, позвоните нам.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-blue-100">
       
@@ -141,7 +182,6 @@ export default function Home() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            // ИЗМЕНЕНИЕ: grid-cols-3 для симметрии
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
             {[
@@ -152,7 +192,7 @@ export default function Home() {
               <motion.div 
                 key={i} 
                 variants={fadeInUp}
-                whileHover={{ y: -10, transition: { duration: 0.2 } }} // Анимация при наведении
+                whileHover={{ y: -10, transition: { duration: 0.2 } }}
                 className="group p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-xl hover:shadow-blue-900/5 transition duration-300"
               >
                 <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-6 text-blue-900 shadow-sm group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition duration-300">
@@ -204,7 +244,6 @@ export default function Home() {
              viewport={{ once: true }}
              className="bg-slate-800 p-8 rounded-2xl border border-slate-700 text-center relative"
           >
-             {/* Декоративный элемент - свечение */}
              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
              
              <div className="relative">
@@ -306,10 +345,7 @@ export default function Home() {
               <h3 className="text-2xl font-serif font-bold text-slate-900 mb-2">Оставить заявку</h3>
               <p className="text-slate-500 mb-8 text-sm">Перезвоним в течение часа.</p>
               
-             <form action={async (formData) => {
-                await sendToTelegram(formData);
-                alert('Спасибо! Ваша заявка отправлена. Мы скоро свяжемся с вами.');
-              }} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <input 
                   name="name" 
                   type="text" 
@@ -330,8 +366,12 @@ export default function Home() {
                   className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" 
                   placeholder="Ваш вопрос"
                 ></textarea>
-                <button type="submit" className="w-full bg-blue-900 text-white py-4 rounded-lg font-bold hover:bg-blue-800 transition shadow-lg shadow-blue-900/10 hover:shadow-xl hover:-translate-y-0.5">
-                  Отправить
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full bg-blue-900 text-white py-4 rounded-lg font-bold hover:bg-blue-800 transition shadow-lg shadow-blue-900/10 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50"
+                >
+                  {loading ? 'Отправка...' : 'Отправить'}
                 </button>
               </form>
             </div>
@@ -352,23 +392,38 @@ export default function Home() {
         ></iframe>
       </section>
 
-      {/* --- FOOTER --- */}
+     {/* --- FOOTER --- */}
       <footer className="bg-slate-900 text-slate-400 py-12 px-4 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
+          
+          {/* Левая колонка */}
           <div className="text-center md:text-left">
             <span className="font-serif text-xl font-bold text-white tracking-tight">LegaLight</span>
             <p className="text-xs mt-2 max-w-xs text-slate-500">
-              г. Бишкек, ул. Токтогула 125/1, БЦ Авангард
+              г. Бишкек, ул. Токтогула 125/1, БЦ Авангард Tower B
             </p>
+            <div className="text-xs text-slate-600 mt-4">
+              © {new Date().getFullYear()} LegaLight. All rights reserved.
+            </div>
           </div>
           
-          <div className="flex gap-6 text-sm font-medium">
-            <Link href="#services" className="hover:text-white transition">Услуги</Link>
-            <Link href="#contact" className="hover:text-white transition">Контакты</Link>
-          </div>
+          {/* Правая колонка: Навигация и Документы */}
+          <div className="flex flex-col md:flex-row gap-8 md:gap-16 text-sm font-medium">
+            
+            {/* Меню */}
+            <div className="flex flex-col gap-3">
+               <span className="text-white font-bold mb-1">Меню</span>
+               <Link href="#services" className="hover:text-white transition">Услуги</Link>
+               <Link href="#contact" className="hover:text-white transition">Контакты</Link>
+            </div>
 
-          <div className="text-xs text-slate-500">
-            © {new Date().getFullYear()} LegaLight. All rights reserved.
+            {/* Документы (НОВОЕ) */}
+            <div className="flex flex-col gap-3">
+               <span className="text-white font-bold mb-1">Документы</span>
+               <Link href="/privacy" className="hover:text-white transition">Политика конфиденциальности</Link>
+               <Link href="/offer" className="hover:text-white transition">Публичная оферта</Link>
+            </div>
+
           </div>
         </div>
       </footer>
