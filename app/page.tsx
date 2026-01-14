@@ -10,8 +10,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
           
           {/* Логотип */}
-          <div className="flex flex-col leading-none z-50">
-            <span className="font-serif text-xl md:text-2xl font-bold text-blue-900 tracking-tight">LegaLight</span>
+          <div className="flex flex-col leading-none z-50 mr-4">
+            <span className="font-serif text-lg md:text-2xl font-bold text-blue-900 tracking-tight">LegaLight</span>
             <span className="text-[9px] md:text-[10px] text-slate-500 font-medium tracking-widest uppercase mt-1">Юридическая компания</span>
           </div>
           
@@ -22,35 +22,53 @@ export default function Home() {
             <Link href="#contact" className="hover:text-blue-900 transition">Контакты</Link>
           </nav>
 
-          {/* Правая часть: Телефоны и кнопка */}
-          <div className="flex items-center gap-4">
+          {/* Правая часть: Мессенджеры, Телефоны и Кнопка */}
+          <div className="flex items-center gap-3 md:gap-6">
             
-            {/* Телефоны */}
-            <div className="flex flex-col items-end">
+            {/* Блок контактов (Иконки + Номера) */}
+            <div className="flex items-center gap-4">
               
-              {/* МОБИЛЬНАЯ ВЕРСИЯ: Две иконки звонка */}
-              <div className="lg:hidden flex gap-2">
-                <a href="tel:+996772774433" className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-blue-900 active:bg-blue-100 border border-slate-200">
-                  <Phone className="w-4 h-4" />
-                </a>
-                <a href="tel:+996554900928" className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-blue-900 active:bg-blue-100 border border-slate-200">
-                  <Phone className="w-4 h-4" />
-                </a>
+              {/* Мессенджеры (Видны всегда) */}
+              <div className="flex items-center gap-2 md:gap-3">
+                 <a href="https://wa.me/996772774433" target="_blank" className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition border border-green-100" aria-label="WhatsApp">
+                    <MessageCircle size={18} />
+                 </a>
+                 <a href="https://t.me/+996772774433" target="_blank" className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white transition border border-blue-100" aria-label="Telegram">
+                    <Send size={18} />
+                 </a>
               </div>
 
-              {/* ДЕСКТОП ВЕРСИЯ: Номера текстом */}
-              <div className="hidden lg:flex flex-col items-end leading-tight">
-                <a href="tel:+996772774433" className="text-sm font-bold text-slate-800 hover:text-blue-900 transition">
-                  +996 (772) 77-44-33
-                </a>
-                <a href="tel:+996554900928" className="text-sm font-bold text-slate-800 hover:text-blue-900 transition mt-0.5">
-                  +996 (554) 900-928
-                </a>
+              {/* Разделитель (только на ПК) */}
+              <div className="hidden lg:block w-px h-8 bg-slate-200"></div>
+
+              {/* Телефоны */}
+              <div className="flex flex-col items-end">
+                
+                {/* МОБИЛЬНАЯ ВЕРСИЯ: Две иконки звонка */}
+                <div className="lg:hidden flex gap-2">
+                  <a href="tel:+996772774433" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 active:bg-blue-100 border border-slate-200">
+                    <Phone className="w-4 h-4" />
+                  </a>
+                  <a href="tel:+996554900928" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 active:bg-blue-100 border border-slate-200">
+                    <Phone className="w-4 h-4" />
+                  </a>
+                </div>
+
+                {/* ДЕСКТОП ВЕРСИЯ: Номера текстом */}
+                <div className="hidden lg:flex flex-col items-end leading-tight">
+                  <a href="tel:+996772774433" className="text-sm font-bold text-slate-800 hover:text-blue-900 transition">
+                    +996 (772) 77-44-33
+                  </a>
+                  <a href="tel:+996554900928" className="text-sm font-bold text-slate-800 hover:text-blue-900 transition mt-0.5">
+                    +996 (554) 900-928
+                  </a>
+                </div>
               </div>
+
             </div>
             
-            {/* Кнопка заявки */}
-            <Link href="#contact" className="hidden sm:block bg-blue-900 text-white px-5 py-2.5 rounded text-sm font-medium hover:bg-blue-800 transition shadow-lg shadow-blue-900/20 whitespace-nowrap">
+            {/* Кнопка заявки (Скрыта на мобильном, чтобы не перегружать шапку) */}
+            <Link href="#contact" className="hidden xl:block bg-blue-900 text-white px-5 py-2.5 rounded text-sm font-medium hover:bg-blue-800 transition shadow-lg shadow-blue-900/20 whitespace-nowrap">
               Оставить заявку
             </Link>
           </div>
@@ -58,7 +76,7 @@ export default function Home() {
       </header>
 
       {/* --- HERO BLOCK --- */}
-      <section className="pt-28 md:pt-32 pb-16 md:pb-24 px-4 bg-slate-50 border-b border-slate-100">
+      <section className="pt-24 md:pt-32 pb-16 md:pb-24 px-4 bg-slate-50 border-b border-slate-100">
         <div className="max-w-5xl mx-auto text-center">
           <span className="inline-block py-1 px-3 rounded-full bg-white border border-slate-200 text-blue-900 text-[10px] md:text-xs font-bold tracking-wide mb-6 shadow-sm">
             БИШКЕК • КЫРГЫЗСТАН
@@ -234,7 +252,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- MAP SECTION (Updated for Avangard BC) --- */}
+      {/* --- MAP SECTION --- */}
       <section className="w-full h-80 md:h-96 bg-slate-200 relative">
         <iframe 
           width="100%" 
