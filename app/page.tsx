@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Scale, Phone, MapPin, CheckCircle, Calculator, Users, FileText, ArrowRight, Mail } from 'lucide-react';
+import { Scale, Phone, MapPin, CheckCircle, Calculator, Users, FileText, ArrowRight, Mail, MessageCircle, Send } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -9,7 +9,7 @@ export default function Home() {
       <header className="fixed top-0 w-full bg-white/95 backdrop-blur-sm border-b border-slate-100 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
           
-          {/* Логотип LegaLight */}
+          {/* Логотип */}
           <div className="flex flex-col leading-none z-50">
             <span className="font-serif text-xl md:text-2xl font-bold text-blue-900 tracking-tight">LegaLight</span>
             <span className="text-[9px] md:text-[10px] text-slate-500 font-medium tracking-widest uppercase mt-1">Юридическая компания</span>
@@ -27,12 +27,18 @@ export default function Home() {
             
             {/* Телефоны */}
             <div className="flex flex-col items-end">
-              {/* Мобильная иконка (видна только на телефоне) */}
-              <a href="tel:+996772774433" className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-blue-900">
-                <Phone className="w-5 h-5" />
-              </a>
+              
+              {/* МОБИЛЬНАЯ ВЕРСИЯ: Две иконки звонка */}
+              <div className="lg:hidden flex gap-2">
+                <a href="tel:+996772774433" className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-blue-900 active:bg-blue-100 border border-slate-200">
+                  <Phone className="w-4 h-4" />
+                </a>
+                <a href="tel:+996554900928" className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-blue-900 active:bg-blue-100 border border-slate-200">
+                  <Phone className="w-4 h-4" />
+                </a>
+              </div>
 
-              {/* Номера текстом (видны только на ПК/Планшете) */}
+              {/* ДЕСКТОП ВЕРСИЯ: Номера текстом */}
               <div className="hidden lg:flex flex-col items-end leading-tight">
                 <a href="tel:+996772774433" className="text-sm font-bold text-slate-800 hover:text-blue-900 transition">
                   +996 (772) 77-44-33
@@ -140,34 +146,64 @@ export default function Home() {
             <div className="p-8 md:p-14 bg-blue-900 text-white flex flex-col justify-between order-2 lg:order-1">
               <div>
                 <h3 className="text-2xl font-serif font-bold mb-6">Наши контакты</h3>
-                <div className="space-y-6">
+                <div className="space-y-8">
+                  
+                  {/* Адрес */}
                   <div className="flex items-start gap-4">
                     <MapPin className="shrink-0 text-blue-400" />
                     <div>
-                      <p className="font-medium">Адрес:</p>
-                      <p className="text-blue-200 text-sm">г. Бишкек, пер. Терский, 18</p>
+                      <p className="font-medium mb-1">Офис:</p>
+                      <p className="text-blue-200 text-sm leading-relaxed">
+                        г. Бишкек, ул. Токтогула 125/1,<br/> 
+                        БЦ «Авангард», Tower B
+                      </p>
                     </div>
                   </div>
                   
-                  {/* Новые телефоны */}
+                  {/* Телефоны + Мессенджеры */}
                   <div className="flex items-start gap-4">
                     <Phone className="shrink-0 text-blue-400" />
-                    <div>
-                      <p className="font-medium">Телефоны:</p>
-                      <a href="tel:+996772774433" className="block text-blue-200 text-sm hover:text-white mt-1">
-                        +996 (772) 77-44-33
-                      </a>
-                      <a href="tel:+996554900928" className="block text-blue-200 text-sm hover:text-white mt-1">
-                        +996 (554) 900-928
-                      </a>
+                    <div className="w-full">
+                      <p className="font-medium mb-2">Связаться с нами:</p>
+                      
+                      {/* Номер 1 */}
+                      <div className="flex flex-wrap items-center gap-3 mb-3">
+                        <a href="tel:+996772774433" className="text-blue-200 text-sm hover:text-white font-medium">
+                          +996 (772) 77-44-33
+                        </a>
+                        <div className="flex gap-2">
+                           <a href="https://wa.me/996772774433" target="_blank" className="bg-green-600 p-1.5 rounded text-white hover:bg-green-500 transition" title="WhatsApp">
+                             <MessageCircle size={16} />
+                           </a>
+                           <a href="https://t.me/+996772774433" target="_blank" className="bg-blue-500 p-1.5 rounded text-white hover:bg-blue-400 transition" title="Telegram">
+                             <Send size={16} />
+                           </a>
+                        </div>
+                      </div>
+
+                      {/* Номер 2 */}
+                      <div className="flex flex-wrap items-center gap-3">
+                        <a href="tel:+996554900928" className="text-blue-200 text-sm hover:text-white font-medium">
+                          +996 (554) 900-928
+                        </a>
+                        <div className="flex gap-2">
+                           <a href="https://wa.me/996554900928" target="_blank" className="bg-green-600 p-1.5 rounded text-white hover:bg-green-500 transition" title="WhatsApp">
+                             <MessageCircle size={16} />
+                           </a>
+                           <a href="https://t.me/+996554900928" target="_blank" className="bg-blue-500 p-1.5 rounded text-white hover:bg-blue-400 transition" title="Telegram">
+                             <Send size={16} />
+                           </a>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
 
-                  {/* Новый Email */}
+                  {/* Email */}
                   <div className="flex items-start gap-4">
                     <Mail className="shrink-0 text-blue-400" />
                     <div>
-                      <p className="font-medium">Email:</p>
+                      <p className="font-medium mb-1">Email:</p>
                       <a href="mailto:info@legalight.kg" className="text-blue-200 text-sm hover:text-white">info@legalight.kg</a>
                     </div>
                   </div>
@@ -198,7 +234,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- MAP SECTION --- */}
+      {/* --- MAP SECTION (Updated for Avangard BC) --- */}
       <section className="w-full h-80 md:h-96 bg-slate-200 relative">
         <iframe 
           width="100%" 
@@ -206,7 +242,7 @@ export default function Home() {
           title="map"
           className="absolute inset-0 grayscale contrast-125 opacity-80 hover:opacity-100 transition duration-500"
           frameBorder="0" 
-          src="https://maps.google.com/maps?q=Bishkek,%20Terskiy%20pereulok%2018&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          src="https://maps.google.com/maps?q=Avangard+Business+Center+Bishkek&t=&z=16&ie=UTF8&iwloc=&output=embed"
         ></iframe>
       </section>
 
@@ -215,7 +251,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
             <span className="font-serif text-xl font-bold text-white tracking-tight">LegaLight</span>
-            <p className="text-xs mt-2 max-w-xs">Профессиональные юридические, бухгалтерские и HR услуги в Кыргызстане.</p>
+            <p className="text-xs mt-2 max-w-xs text-slate-500">
+              г. Бишкек, ул. Токтогула 125/1, БЦ Авангард
+            </p>
           </div>
           
           <div className="flex gap-6 text-sm font-medium">
