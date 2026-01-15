@@ -51,8 +51,7 @@ export default function Home() {
     const TOKEN = '8482726774:AAEb21VOtB30hZOWlJFB3TQjP5RBXSjN9ww'; 
     const CHAT_ID = '769291850'; 
 
-    const text = `🔥 *Заявка с сайта!*%0A👤 *Имя:* ${name}%0A📞 *Телефон:* ${phone}%0A❓ *Вопрос:* ${question || 'Не указан'}%0A✅ *Согласие:* Получено`;
-
+const text = `🔥 *Заявка с сайта!*\n👤 *Имя:* ${name}\n📞 *Телефон:* ${phone}\n❓ *Вопрос:* ${question || 'Не указан'}\n✅ *Согласие:* Получено`;
     try {
       await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
         method: 'POST',
