@@ -2,17 +2,16 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Scale, Phone, MapPin, CheckCircle, Calculator, Users, ArrowRight, Mail, MessageCircle, Send } from 'lucide-react';
-import { motion, Variants } from 'framer-motion'; // 👈 Добавил Variants
+import { Scale, Phone, MapPin, CheckCircle, Users, ArrowRight, Mail, MessageCircle, Send, FileText, Briefcase } from 'lucide-react'; // Добавил Briefcase
+import { motion, Variants } from 'framer-motion';
 
-// --- НАСТРОЙКИ АНИМАЦИИ (ИСПРАВЛЕНО) ---
-// Мы явно говорим TypeScript, что это Variants
+// --- НАСТРОЙКИ АНИМАЦИИ ---
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: { 
     opacity: 1, 
     y: 0, 
-    transition: { duration: 0.6 } // Убрал 'ease', чтобы не было ошибок типов, стандартная анимация тоже плавная
+    transition: { duration: 0.6 } 
   }
 };
 
@@ -36,16 +35,26 @@ export default function Home() {
     const name = formData.get('name');
     const phone = formData.get('phone');
     const question = formData.get('question');
+    
+    // Получаем состояние чекбокса (хотя атрибут required и так не даст отправить)
+    const agreement = formData.get('agreement');
+
+    if (!agreement) {
+        alert('Пожалуйста, подтвердите согласие на обработку данных.');
+        setLoading(false);
+        return;
+    }
 
     // 👇 ТВОИ ДАННЫЕ
     const TOKEN = '8482726774:AAEb21VOtB30hZOWlJFB3TQjP5RBXSjN9ww'; 
-    const CHAT_ID = '1256093838'; // Вставь сюда свой ID, если он другой
+    const CHAT_ID = '1256093838'; 
 
     const text = `
 🔥 *Заявка с сайта LegaLight!*
 👤 *Имя:* ${name}
 📞 *Телефон:* ${phone}
 ❓ *Вопрос:* ${question || 'Не указан'}
+✅ *Согласие:* Получено
     `;
 
     try {
@@ -149,14 +158,18 @@ export default function Home() {
           <motion.span variants={fadeInUp} className="inline-block py-1 px-3 rounded-full bg-white border border-slate-200 text-blue-900 text-[10px] md:text-xs font-bold tracking-wide mb-6 shadow-sm">
             БИШКЕК • КЫРГЫЗСТАН
           </motion.span>
-          <motion.h1 variants={fadeInUp} className="text-3xl md:text-6xl font-serif font-bold text-slate-900 mb-6 md:mb-8 leading-tight">
-            Комплексная защита <br className="hidden md:block"/>
-            <span className="text-blue-900">вашего бизнеса и прав</span>
+          
+          <motion.h1 variants={fadeInUp} className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold text-slate-900 mb-6 md:mb-8 leading-tight">
+            Надежная правовая основа <br className="hidden md:block"/>
+            <span className="text-blue-900">работы финтеха, банковских и финансовых услуг</span>
           </motion.h1>
-          <motion.p variants={fadeInUp} className="text-base md:text-lg text-slate-600 mb-8 md:mb-10 max-w-2xl mx-auto leading-relaxed">
-            Команда LegaLight — это квалифицированные юристы с опытом более 10 лет. 
-            Мы предлагаем готовые решения: от юридического аутсорсинга до бухгалтерии.
+          
+          <motion.p variants={fadeInUp} className="text-base md:text-lg text-slate-600 mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed">
+            Команда LegaLight — квалифицированные юристы с опытом более 20 лет. 
+            Мы специализируемся на юридическом сопровождении и лицензировании компаний, 
+            работающих в области финтеха, финансовых и банковских услуг.
           </motion.p>
+          
           <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="#contact" className="w-full sm:w-auto bg-blue-900 text-white px-8 py-4 rounded text-center font-medium hover:bg-blue-800 transition flex items-center justify-center gap-2 shadow-xl shadow-blue-900/20 hover:-translate-y-1 duration-200">
               Получить консультацию <ArrowRight size={18} />
@@ -168,7 +181,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* --- SERVICES (GRID - 3 ITEMS) --- */}
+      {/* --- SERVICES (GRID - 4 ITEMS) --- */}
       <section id="services" className="py-16 md:py-24 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <motion.div 
@@ -187,24 +200,43 @@ export default function Home() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            // Сетка изменена на 4 колонки
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
             {[
-              { title: "Аутсорсинг", icon: <Scale />, text: "Правовой анализ договоров, сопровождение сделок и участие в переговорах." },
-              { title: "Представительство", icon: <Users />, text: "Защита интересов в судах, составление жалоб, досудебное урегулирование." },
-              { title: "Бухгалтерия", icon: <Calculator />, text: "Аудит, бухгалтерский аутсорсинг и оптимизация налогообложения." },
+              { 
+                title: "Аутсорсинг", 
+                icon: <Scale />, 
+                text: "Правовой анализ договоров, сопровождение сделок и участие в переговорах." 
+              },
+              { 
+                title: "Представительство", 
+                icon: <Users />, 
+                text: "Защита интересов в судах, составление жалоб, досудебное урегулирование." 
+              },
+              { 
+                title: "Лицензирование", 
+                icon: <FileText />, 
+                text: "Подготовка документов и подача пакета на получение лицензий операторов платежных систем, регистрация операторов МСДП." 
+              },
+              { 
+                // НОВАЯ УСЛУГА
+                title: "Регистрация", 
+                icon: <Briefcase />, 
+                text: "ОсОО, АО, ОсДО, ИП с участием иностранных граждан. Сопровождение при открытии банковских счетов и карт." 
+              },
             ].map((item, i) => (
               <motion.div 
                 key={i} 
                 variants={fadeInUp}
                 whileHover={{ y: -10, transition: { duration: 0.2 } }}
-                className="group p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-xl hover:shadow-blue-900/5 transition duration-300"
+                className="group p-6 md:p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-xl hover:shadow-blue-900/5 transition duration-300"
               >
-                <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-6 text-blue-900 shadow-sm group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition duration-300">
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-6 text-blue-900 shadow-sm group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition duration-300">
                   {item.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-3">{item.title}</h3>
-                <p className="text-slate-600 leading-relaxed">{item.text}</p>
+                <h3 className="text-lg font-bold mb-3">{item.title}</h3>
+                <p className="text-slate-600 leading-relaxed text-sm">{item.text}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -226,7 +258,8 @@ export default function Home() {
               Наш подход объединяет юридическую точность и финансовую грамотность.
             </p>
             <div className="space-y-5">
-              {["10+ лет опыта на рынке", "Комплексный подход (Юристы + Бухгалтерия)", "Работаем на 3 языках (RU, KG, EN)"].map((txt, i) => (
+              {/* УБРАН ПУНКТ ПРО КОМПЛЕКСНЫЙ ПОДХОД */}
+              {["20+ лет опыта на рынке", "Комплексный подход", "Работаем на 3 языках (RU, KG, EN)"].map((txt, i) => (
                 <motion.div 
                   key={i} 
                   initial={{ opacity: 0, x: -20 }}
@@ -371,6 +404,21 @@ export default function Home() {
                   className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-900 focus:ring-1 focus:ring-blue-900 outline-none transition bg-slate-50" 
                   placeholder="Ваш вопрос"
                 ></textarea>
+                
+                {/* ЧЕКБОКС СОГЛАСИЯ */}
+                <div className="flex items-start gap-3 pt-2">
+                    <input 
+                        type="checkbox" 
+                        name="agreement"
+                        id="agreement"
+                        required
+                        className="mt-1 w-4 h-4 text-blue-900 border-slate-300 rounded focus:ring-blue-900 cursor-pointer"
+                    />
+                    <label htmlFor="agreement" className="text-xs text-slate-500 leading-tight cursor-pointer">
+                        Нажимая кнопку Отправить, я ознакомлен с <Link href="/offer" className="text-blue-900 underline hover:no-underline">Публичной офертой</Link>, <Link href="/privacy" className="text-blue-900 underline hover:no-underline">Политикой конфиденциальности</Link> и соглашаюсь на сбор, обработку и передачу персональных данных.
+                    </label>
+                </div>
+
                 <button 
                   type="submit" 
                   disabled={loading}
@@ -405,7 +453,7 @@ export default function Home() {
           <div className="text-center md:text-left">
             <span className="font-serif text-xl font-bold text-white tracking-tight">LegaLight</span>
             <p className="text-xs mt-2 max-w-xs text-slate-500">
-              г. Бишкек, ул. Токтогула 125/1, БЦ Авангард
+              г. Бишкек, ул. Токтогула 125/1, БЦ Авангард, Tower B
             </p>
             <div className="text-xs text-slate-600 mt-4">
               © {new Date().getFullYear()} LegaLight. All rights reserved.
@@ -427,6 +475,7 @@ export default function Home() {
                <span className="text-white font-bold mb-1">Документы</span>
                <Link href="/privacy" className="hover:text-white transition">Политика конфиденциальности</Link>
                <Link href="/offer" className="hover:text-white transition">Публичная оферта</Link>
+               <Link href="/consent" className="hover:text-white transition">Согласие на обработку</Link>
             </div>
 
           </div>
