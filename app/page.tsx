@@ -1,17 +1,17 @@
 'use client';
-
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Scale, Phone, MapPin, CheckCircle, Users, ArrowRight, Mail, MessageCircle, Send, FileText, Briefcase } from 'lucide-react'; // Добавил Briefcase
-import { motion, Variants } from 'framer-motion';
+import { Scale, Phone, MapPin, CheckCircle, Users, ArrowRight, Mail, MessageCircle, Send, FileText, Briefcase, ChevronRight } from 'lucide-react';
+import { motion, Variants, useScroll, useTransform } from 'framer-motion';
 
-// --- НАСТРОЙКИ АНИМАЦИИ ---
+// --- АНИМАЦИИ ---
 const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 30 },
   visible: { 
     opacity: 1, 
     y: 0, 
-    transition: { duration: 0.6 } 
+    transition: { duration: 0.6, ease: "easeOut" } 
   }
 };
 
@@ -19,24 +19,24 @@ const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.2 }
+    transition: { staggerChildren: 0.15 }
   }
 };
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  
+  // --- ЛОГИКА ПАРАЛЛАКСА ---
+  const { scrollY } = useScroll();
+  const yLeft = useTransform(scrollY, [0, 600], [0, 200]);
+  const yRight = useTransform(scrollY, [0, 600], [0, 150]);
 
-  // --- ЛОГИКА ОТПРАВКИ ФОРМЫ ---
+  // --- ОТПРАВКА ФОРМЫ ---
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const name = formData.get('name');
-    const phone = formData.get('phone');
-    const question = formData.get('question');
-    
-    // Получаем состояние чекбокса (хотя атрибут required и так не даст отправить)
     const agreement = formData.get('agreement');
 
     if (!agreement) {
@@ -45,252 +45,201 @@ export default function Home() {
         return;
     }
 
-    // 👇 ТВОИ ДАННЫЕ
+    const name = formData.get('name');
+    const phone = formData.get('phone');
+    const question = formData.get('question');
     const TOKEN = '8482726774:AAEb21VOtB30hZOWlJFB3TQjP5RBXSjN9ww'; 
     const CHAT_ID = '769291850'; 
 
-    const text = `
-🔥 *Заявка с сайта LegaLight!*
-👤 *Имя:* ${name}
-📞 *Телефон:* ${phone}
-❓ *Вопрос:* ${question || 'Не указан'}
-✅ *Согласие:* Получено
-    `;
+    const text = `🔥 *Заявка с сайта!*%0A👤 *Имя:* ${name}%0A📞 *Телефон:* ${phone}%0A❓ *Вопрос:* ${question || 'Не указан'}%0A✅ *Согласие:* Получено`;
 
     try {
       await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text: text,
-          parse_mode: 'Markdown',
-        }),
+        body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'Markdown' }),
       });
-      alert('Спасибо! Ваша заявка отправлена.');
+      alert('Спасибо! Ваша заявка принята.');
       (e.target as HTMLFormElement).reset();
     } catch (error) {
-      console.error(error);
-      alert('Ошибка при отправке. Пожалуйста, позвоните нам.');
+      alert('Ошибка отправки. Свяжитесь с нами по WhatsApp.');
     } finally {
       setLoading(false);
     }
   }
-
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-blue-100">
+    <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-blue-100 overflow-x-hidden">
       
       {/* --- HEADER --- */}
       <motion.header 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-100 z-50"
+        className="fixed top-0 w-full bg-white/90 backdrop-blur-xl border-b border-slate-100 z-50 shadow-sm"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 md:h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 h-20 md:h-24 flex items-center justify-between">
+          <Link href="/" className="flex flex-col leading-none z-50 mr-4 group">
+            <span className="font-serif text-2xl md:text-3xl font-bold text-blue-900 tracking-tight group-hover:opacity-80 transition">LegaLight</span>
+            <span className="text-[10px] md:text-xs text-slate-500 font-medium tracking-widest uppercase mt-1 pl-0.5">Юридическая компания</span>
+          </Link>
           
-          {/* Логотип */}
-          <div className="flex flex-col leading-none z-50 mr-4">
-            <span className="font-serif text-lg md:text-2xl font-bold text-blue-900 tracking-tight">LegaLight</span>
-            <span className="text-[9px] md:text-[10px] text-slate-500 font-medium tracking-widest uppercase mt-1">Юридическая компания</span>
-          </div>
-          
-          {/* Меню */}
-          <nav className="hidden lg:flex gap-8 text-sm font-medium text-slate-600 absolute left-1/2 -translate-x-1/2">
-            <Link href="#services" className="hover:text-blue-900 transition">Услуги</Link>
-            <Link href="#about" className="hover:text-blue-900 transition">О компании</Link>
-            <Link href="#contact" className="hover:text-blue-900 transition">Контакты</Link>
+          <nav className="hidden xl:flex gap-10 text-sm font-semibold text-slate-600 uppercase tracking-wider absolute left-1/2 -translate-x-1/2">
+            {/* ОБНОВЛЕННЫЕ ССЫЛКИ НА НОВЫЕ СТРАНИЦЫ */}
+            <Link href="/services" className="hover:text-blue-900 transition duration-300 relative group">
+                Услуги
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-900 transition-all group-hover:w-full"></span>
+            </Link>
+            <Link href="/about" className="hover:text-blue-900 transition duration-300 relative group">
+                О компании
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-900 transition-all group-hover:w-full"></span>
+            </Link>
+            <Link href="#contact" className="hover:text-blue-900 transition duration-300 relative group">
+                Контакты
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-900 transition-all group-hover:w-full"></span>
+            </Link>
           </nav>
 
-          {/* Контакты справа */}
-          <div className="flex items-center gap-3 md:gap-6">
-            <div className="flex items-center gap-4">
-              
-              {/* Мессенджеры */}
-              <div className="flex items-center gap-2 md:gap-3">
-                 <a href="https://wa.me/996772774433" target="_blank" className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-green-50 text-green-600 hover:bg-green-600 hover:text-white transition border border-green-100 hover:scale-110 duration-300">
-                    <MessageCircle size={18} />
-                 </a>
-                 <a href="https://t.me/+996772774433" target="_blank" className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white transition border border-blue-100 hover:scale-110 duration-300">
-                    <Send size={18} />
-                 </a>
-              </div>
-
-              <div className="hidden lg:block w-px h-8 bg-slate-200"></div>
-
-              {/* Телефоны */}
-              <div className="flex flex-col items-end">
-                <div className="lg:hidden flex gap-2">
-                  <a href="tel:+996772774433" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 active:bg-blue-100 border border-slate-200">
-                    <Phone className="w-4 h-4" />
-                  </a>
-                  <a href="tel:+996554900928" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 active:bg-blue-100 border border-slate-200">
-                    <Phone className="w-4 h-4" />
-                  </a>
-                </div>
-
-                <div className="hidden lg:flex flex-col items-end leading-tight">
-                  <a href="tel:+996772774433" className="text-sm font-bold text-slate-800 hover:text-blue-900 transition">
-                    +996 (772) 77-44-33
-                  </a>
-                  <a href="tel:+996554900928" className="text-sm font-bold text-slate-800 hover:text-blue-900 transition mt-0.5">
-                    +996 (554) 900-928
-                  </a>
-                </div>
-              </div>
-            </div>
-            
-            <Link href="#contact" className="hidden xl:block bg-blue-900 text-white px-5 py-2.5 rounded text-sm font-medium hover:bg-blue-800 transition shadow-lg shadow-blue-900/20 whitespace-nowrap hover:-translate-y-0.5 transform duration-200">
-              Оставить заявку
-            </Link>
+          <div className="flex items-center gap-4 md:gap-6">
+             <div className="hidden lg:flex flex-col items-end leading-tight">
+                <a href="tel:+996772774433" className="text-sm font-bold text-slate-900 hover:text-blue-900 transition">+996 (772) 77-44-33</a>
+                <a href="tel:+996554900928" className="text-xs text-slate-500 hover:text-blue-900 transition mt-0.5 font-medium">+996 (554) 900-928</a>
+             </div>
+            <Link href="#contact" className="hidden xl:block bg-blue-900 text-white px-6 py-3 rounded-lg text-sm font-bold hover:bg-blue-800 transition shadow-lg shadow-blue-900/20">Оставить заявку</Link>
           </div>
         </div>
       </motion.header>
 
       {/* --- HERO BLOCK --- */}
-      <section className="pt-24 md:pt-32 pb-16 md:pb-24 px-4 bg-slate-50 border-b border-slate-100">
-        <motion.div 
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
-          className="max-w-5xl mx-auto text-center"
-        >
-          <motion.span variants={fadeInUp} className="inline-block py-1 px-3 rounded-full bg-white border border-slate-200 text-blue-900 text-[10px] md:text-xs font-bold tracking-wide mb-6 shadow-sm">
-            БИШКЕК • КЫРГЫЗСТАН
-          </motion.span>
-          
-          <motion.h1 variants={fadeInUp} className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold text-slate-900 mb-6 md:mb-8 leading-tight">
+      <section className="relative pt-32 md:pt-44 pb-20 md:pb-40 px-4 overflow-hidden bg-gradient-to-b from-slate-50 via-white to-transparent">
+        
+        {/* ФОНОВЫЕ СТАТУИ */}
+        <motion.div style={{ y: yLeft }} className="absolute -left-10 bottom-0 w-[300px] md:w-[450px] opacity-10 md:opacity-20 pointer-events-none select-none z-0">
+            <Image src="/themis.png" alt="Themis" width={430} height={900} className="object-contain" />
+        </motion.div>
+        <motion.div style={{ y: yRight }} className="absolute -right-10 bottom-0 w-[300px] md:w-[450px] opacity-10 md:opacity-20 pointer-events-none select-none z-0">
+            <Image src="/artemis.png" alt="Artemis" width={400} height={900} className="object-contain scale-x-[-1]" />
+        </motion.div>
+
+        {/* ДЕКОР ФОНА */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none z-0">
+            <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-blue-100/40 rounded-full blur-[80px]"></div>
+            <div className="absolute bottom-0 -left-20 w-[400px] h-[400px] bg-indigo-50/60 rounded-full blur-[80px]"></div>
+        </div>
+
+        {/* КОНТЕНТ */}
+        <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="max-w-5xl mx-auto text-center relative z-10">
+          <motion.span variants={fadeInUp} className="inline-block py-1.5 px-4 rounded-full bg-white border border-blue-100 text-blue-800 text-xs font-bold tracking-widest uppercase mb-8 shadow-sm">Бишкек • Кыргызстан</motion.span>
+          <motion.h1 variants={fadeInUp} className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-slate-900 mb-8 leading-tight">
             Надежная правовая основа <br className="hidden md:block"/>
-            <span className="text-blue-900">работы финтеха, банковских и финансовых услуг</span>
+            <span className="text-blue-900 relative inline-block">
+              работы финтеха
+              <svg className="absolute w-full h-3 -bottom-1 left-0 text-blue-200 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                 <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" opacity="0.5" />
+              </svg>
+            </span>
           </motion.h1>
-          
-          <motion.p variants={fadeInUp} className="text-base md:text-lg text-slate-600 mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed">
-            Команда LegaLight — квалифицированные юристы с опытом более 20 лет. 
-            Мы специализируемся на юридическом сопровождении и лицензировании компаний, 
-            работающих в области финтеха, финансовых и банковских услуг.
+          <motion.p variants={fadeInUp} className="text-lg md:text-xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+            Команда LegaLight — квалифицированные юристы с опытом более 20 лет. Специализируемся на лицензировании и сопровождении компаний в сфере финтеха, банковских и финансовых услуг.
           </motion.p>
-          
-          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="#contact" className="w-full sm:w-auto bg-blue-900 text-white px-8 py-4 rounded text-center font-medium hover:bg-blue-800 transition flex items-center justify-center gap-2 shadow-xl shadow-blue-900/20 hover:-translate-y-1 duration-200">
-              Получить консультацию <ArrowRight size={18} />
-            </Link>
-            <Link href="#services" className="w-full sm:w-auto bg-white border border-slate-200 text-slate-700 px-8 py-4 rounded text-center font-medium hover:border-blue-900 hover:text-blue-900 transition hover:-translate-y-1 duration-200">
-              Наши практики
-            </Link>
+          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="#contact" className="bg-blue-900 text-white px-10 py-4 rounded-xl font-bold hover:bg-blue-800 transition flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20">Получить консультацию <ArrowRight size={18} /></Link>
+            <Link href="/services" className="bg-white border border-slate-200 text-slate-700 px-10 py-4 rounded-xl font-bold hover:border-blue-900 hover:text-blue-900 transition shadow-sm">Наши практики</Link>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* --- SERVICES (GRID - 4 ITEMS) --- */}
-      <section id="services" className="py-16 md:py-24 px-4 bg-white">
+      {/* --- SERVICES С ЛАЙФХАКОМ (ССЫЛКИ) --- */}
+      <section id="services" className="py-20 px-4 bg-white relative z-20">
         <div className="max-w-7xl mx-auto">
-          <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp}
-            className="text-center mb-12"
-          >
-            <h2 className="text-2xl md:text-3xl font-serif font-bold text-slate-900 mb-3">Направления деятельности</h2>
-            <p className="text-slate-500 text-sm md:text-base">Ключевые компетенции для решения ваших задач</p>
-          </motion.div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4">Направления деятельности</h2>
+            <div className="h-1 w-20 bg-gradient-to-r from-blue-900 to-blue-600 mx-auto rounded-full mb-4"></div>
+            <p className="text-slate-500">Ключевые компетенции для решения ваших бизнес-задач</p>
+          </div>
           
           <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            // Сетка изменена на 4 колонки
+            initial="hidden" 
+            whileInView="visible" 
+            viewport={{ once: true }} 
+            variants={staggerContainer} 
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
+            {/* ТЕПЕРЬ КАРТОЧКИ ЭТО ССЫЛКИ */}
             {[
               { 
                 title: "Аутсорсинг", 
                 icon: <Scale />, 
-                text: "Правовой анализ договоров, сопровождение сделок и участие в переговорах." 
+                text: "Правовой анализ договоров, сопровождение сделок и абонентское обслуживание.",
+                link: "/services#outsourcing" // Ссылка на якорь
               },
               { 
                 title: "Представительство", 
                 icon: <Users />, 
-                text: "Защита интересов в судах, составление жалоб, досудебное урегулирование." 
+                text: "Защита интересов в судах, составление жалоб, досудебное урегулирование.",
+                link: "/services#court" 
               },
               { 
                 title: "Лицензирование", 
                 icon: <FileText />, 
-                text: "Подготовка документов и подача пакета на получение лицензий операторов платежных систем, регистрация операторов МСДП." 
+                text: "Лицензии платежных систем. Регистрация операторов МСДП.",
+                link: "/services#ops" 
               },
               { 
-                // НОВАЯ УСЛУГА
                 title: "Регистрация", 
                 icon: <Briefcase />, 
-                text: "ОсОО, АО, ОсДО, ИП с участием иностранных граждан. Сопровождение при открытии банковских счетов и карт." 
+                text: "ОсОО, АО, ИП с ин. участием. Открытие банковских счетов.",
+                link: "/services#reg" 
               },
             ].map((item, i) => (
-              <motion.div 
-                key={i} 
-                variants={fadeInUp}
-                whileHover={{ y: -10, transition: { duration: 0.2 } }}
-                className="group p-6 md:p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-xl hover:shadow-blue-900/5 transition duration-300"
-              >
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-6 text-blue-900 shadow-sm group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition duration-300">
-                  {item.icon}
-                </div>
-                <h3 className="text-lg font-bold mb-3">{item.title}</h3>
-                <p className="text-slate-600 leading-relaxed text-sm">{item.text}</p>
-              </motion.div>
+              <Link href={item.link} key={i} className="block h-full group">
+                  <motion.div 
+                    variants={fadeInUp} 
+                    className="h-full p-8 rounded-2xl bg-white border border-slate-100 hover:border-blue-300 shadow-lg hover:shadow-2xl hover:shadow-blue-900/10 transition duration-300 flex flex-col relative overflow-hidden"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-6 text-blue-900 group-hover:bg-blue-900 group-hover:text-white transition duration-300">
+                        {item.icon}
+                    </div>
+                    <h3 className="text-xl font-bold mb-4 text-slate-800 flex items-center gap-2 group-hover:text-blue-900 transition">
+                        {item.title}
+                    </h3>
+                    <p className="text-slate-600 text-sm mb-4 flex-grow">{item.text}</p>
+                    
+                    {/* Кнопка "Подробнее" появляется при наведении */}
+                    <div className="text-blue-600 font-bold text-sm flex items-center gap-1 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition duration-300">
+                        Подробнее <ChevronRight size={16} />
+                    </div>
+                  </motion.div>
+              </Link>
             ))}
           </motion.div>
         </div>
       </section>
-
-      {/* --- ABOUT / TRUST --- */}
-      <section id="about" className="py-16 md:py-24 px-4 bg-slate-900 text-white overflow-hidden relative">
-        <div className="max-w-6xl mx-auto relative z-10 grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-          <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-          >
-            <h2 className="text-2xl md:text-3xl font-serif font-bold mb-6">Почему выбирают LegaLight</h2>
-            <p className="text-slate-300 mb-8 leading-relaxed text-sm md:text-base">
-              Мы не используем шаблонные решения. Каждый кейс рассматривается индивидуально с учетом специфики вашего бизнеса. 
-              Наш подход объединяет юридическую точность и финансовую грамотность.
+      {/* ABOUT PREVIEW (Обновлено) */}
+      <section id="about" className="py-20 px-4 bg-slate-900 text-white overflow-hidden relative">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}>
+            <div className="inline-block px-3 py-1 bg-blue-900/50 rounded-full text-blue-300 text-xs font-bold mb-6 border border-blue-800">О компании</div>
+            <h2 className="text-3xl md:text-5xl font-serif font-bold mb-6 leading-tight">Ваш проводник в мире <span className="text-blue-400">Финтеха</span></h2>
+            <p className="text-slate-300 mb-8 leading-relaxed">
+               ОсОО «Легалайт» — это не просто юристы, а эксперты с глубоким пониманием специфики финансовой отрасли. Мы участвуем в разработке законодательства и знаем, как работают технологии изнутри.
             </p>
-            <div className="space-y-5">
-              {/* УБРАН ПУНКТ ПРО КОМПЛЕКСНЫЙ ПОДХОД */}
-              {["20+ лет опыта на рынке", "Комплексный подход", "Работаем на 3 языках (RU, KG, EN)"].map((txt, i) => (
-                <motion.div 
-                  key={i} 
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.2, duration: 0.5 }}
-                  viewport={{ once: true }}
-                  className="flex items-start gap-3"
-                >
-                  <CheckCircle className="text-blue-400 shrink-0 mt-0.5 w-5 h-5" />
-                  <span className="text-slate-200 text-sm md:text-base">{txt}</span>
-                </motion.div>
-              ))}
+            <div className="space-y-4 mb-8">
+               <div className="flex items-center gap-3"><CheckCircle className="text-green-400" size={20}/> <span>Специализация на платежных системах</span></div>
+               <div className="flex items-center gap-3"><CheckCircle className="text-green-400" size={20}/> <span>98% успешных кейсов по лицензированию</span></div>
+               <div className="flex items-center gap-3"><CheckCircle className="text-green-400" size={20}/> <span>Комплексный подход</span></div>
             </div>
+            
+            <Link href="/about" className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-500 transition">
+                Подробнее о нас <ChevronRight size={18} />
+            </Link>
           </motion.div>
           
-          <motion.div 
-             initial={{ scale: 0.9, opacity: 0 }}
-             whileInView={{ scale: 1, opacity: 1 }}
-             transition={{ duration: 0.8 }}
-             viewport={{ once: true }}
-             className="bg-slate-800 p-8 rounded-2xl border border-slate-700 text-center relative"
-          >
-             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-             
-             <div className="relative">
-                <div className="text-4xl md:text-5xl font-bold text-blue-400 mb-2">100%</div>
-                <div className="text-xs md:text-sm text-slate-400 uppercase tracking-wider">Конфиденциальность</div>
-                <div className="my-6 h-px bg-slate-700 w-full"></div>
-                <p className="text-slate-400 text-sm">Мы гарантируем полную защиту вашей информации и соблюдение адвокатской тайны.</p>
-             </div>
-          </motion.div>
+          <div className="bg-slate-800 p-10 rounded-3xl border border-slate-700 text-center relative overflow-hidden">
+             <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 mb-4">2004</div>
+             <p className="text-slate-300 text-sm mb-6">Год начала практики наших ведущих экспертов в банковском секторе.</p>
+             <div className="h-px bg-slate-700 w-full mb-6"></div>
+             <p className="text-xs text-slate-400 uppercase tracking-widest font-bold">Опыт • Доверие • Результат</p>
+          </div>
         </div>
       </section>
 
