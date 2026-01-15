@@ -47,7 +47,7 @@ export default function Home() {
 
     // 👇 ТВОИ ДАННЫЕ
     const TOKEN = '8482726774:AAEb21VOtB30hZOWlJFB3TQjP5RBXSjN9ww'; 
-    const CHAT_ID = '1256093838'; 
+    const CHAT_ID = '769291850'; 
 
     const text = `
 🔥 *Заявка с сайта LegaLight!*
