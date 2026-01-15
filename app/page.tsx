@@ -113,12 +113,7 @@ export default function Home() {
       <section className="relative pt-32 md:pt-44 pb-20 md:pb-40 px-4 overflow-hidden bg-gradient-to-b from-slate-50 via-white to-transparent">
         
         {/* ФОНОВЫЕ СТАТУИ */}
-        <motion.div style={{ y: yLeft }} className="absolute -left-10 bottom-0 w-[300px] md:w-[450px] opacity-10 md:opacity-20 pointer-events-none select-none z-0">
-            <Image src="/themis.png" alt="Themis" width={430} height={900} className="object-contain" />
-        </motion.div>
-        <motion.div style={{ y: yRight }} className="absolute -right-10 bottom-0 w-[300px] md:w-[450px] opacity-10 md:opacity-20 pointer-events-none select-none z-0">
-            <Image src="/artemis.png" alt="Artemis" width={400} height={900} className="object-contain scale-x-[-1]" />
-        </motion.div>
+       
 
         {/* ДЕКОР ФОНА */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none z-0">

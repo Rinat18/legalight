@@ -1,15 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",  // 👈 Эта строчка создает папку out
+  output: "export",
   images: {
-    unoptimized: true, // Обязательно для обычного хостинга
+    unoptimized: true,
   },
+  // 👇 ВОТ ЭТА ВАЖНАЯ СТРОЧКА
+  trailingSlash: true, 
+  
   eslint: {
-    ignoreDuringBuilds: true, // Игнорировать мелкие ошибки при сборке
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // Игнорировать ошибки типов (чтобы точно собралось)
+    ignoreBuildErrors: true,
   },
 };
 
