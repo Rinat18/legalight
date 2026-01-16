@@ -1,4 +1,5 @@
 'use client';
+import NewsSection from './NewsSection';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -208,6 +209,8 @@ const text = `🔥 *Заявка с сайта!*\n👤 *Имя:* ${name}\n📞 *
           </motion.div>
         </div>
       </section>
+      {/* --- NEWS SECTION --- */}
+<NewsSection />
       {/* ABOUT PREVIEW (Обновлено) */}
       <section id="about" className="py-20 px-4 bg-slate-900 text-white overflow-hidden relative">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
